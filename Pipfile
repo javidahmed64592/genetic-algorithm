@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 numpy = "~=1.25"
+matplotlib = "*"
 
 [dev-packages]
 isort = "*"
