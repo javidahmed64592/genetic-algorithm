@@ -23,10 +23,10 @@ class GeneticAlgorithm:
         a phrase for the members to calculate their fitness.
 
         Parameters:
-        population_size (int): Number of members for the population
-        mutation_rate (int): Probability for members' chromosomes to mutate
-        phrase (str): The phrase to be guessed by the members
-        mem_genes (List[str]): Possible genes to be used by the members' chromosomes
+            population_size (int): Number of members for the population
+            mutation_rate (int): Probability for members' chromosomes to mutate
+            phrase (str): The phrase to be guessed by the members
+            mem_genes (List[str]): Possible genes to be used by the members' chromosomes
         """
         print_system_msg("Creating population...")
         self._population_size = population_size
@@ -34,9 +34,9 @@ class GeneticAlgorithm:
         self._phrase = phrase
         self._mem_genes = mem_genes
 
-        self._population: List[Member] = []
-        self.max_fitness_history: List[int] = []
-        self.avg_fitness_history: List[float] = []
+        self._population: NDArray = None
+        self._max_fitness_history: List[int] = []
+        self._avg_fitness_history: List[float] = []
 
     def __str__(self) -> str:
         """
@@ -87,26 +87,25 @@ class GeneticAlgorithm:
         """
         # Calculate population fitness
         _population_fitness = self.calculate_population_fitness()
-        sorted = self.population[np.argsort(_population_fitness)]
 
         # Find the member with the highest fitness
-        best = sorted[-1]
-        self.best_chromosome = best.chromosome
-        self.max_fitness = best.fitness
+        best = self.population[np.argmax(_population_fitness)]
+        self._best_chromosome = best.chromosome
+        self._max_fitness = best.fitness
 
         # Add fitness data to lists
-        self.max_fitness_history.append(self.max_fitness)
-        self.avg_fitness_history.append(np.average(_population_fitness))
+        self._max_fitness_history.append(self._max_fitness)
+        self._avg_fitness_history.append(np.average(_population_fitness))
 
     def select_parent(self, parent: Member) -> Member | None:
         """
         Uses the Rejection Sampling technique to choose whether or not to use the
         provided parent for crossover.
 
-        Inputs:
-        parent (Member): Potential parent to use for crossover
+        Parameters:
+            parent (Member): Potential parent to use for crossover
         """
-        if np.random.uniform(0, 1) < parent.fitness / self.max_fitness:
+        if np.random.uniform(0, 1) < parent.fitness / self._max_fitness:
             return parent
         return None
 
@@ -147,12 +146,12 @@ class GeneticAlgorithm:
             self.evaluate()
 
             # Correct phrase found so break out of the loop
-            if self.best_chromosome == self._phrase:
-                print_system_msg(f"{gen} Phrase solved to be: {self.best_chromosome}")
+            if self._best_chromosome == self._phrase:
+                print_system_msg(f"{gen} Phrase solved to be: {self._best_chromosome}")
                 break
 
             # Return the closest match and its associated fitness then evolve.
-            print_system_msg(f"{gen} Best Chromosome: {self.best_chromosome} \t|| Max Fitness: {self.max_fitness}")
+            print_system_msg(f"{gen} Best Chromosome: {self._best_chromosome} \t|| Max Fitness: {self._max_fitness}")
             self.evolve()
 
             # Increase generation
@@ -166,10 +165,10 @@ class GeneticAlgorithm:
         plt.figure(figsize=(14, 8))
 
         x = np.arange(self._generation)
-        normalisation = np.max(self.max_fitness_history)
+        normalisation = np.max(self._max_fitness_history)
 
-        plt.plot(x, self.max_fitness_history / normalisation, label="Max Fitness", c="g")
-        plt.plot(x, self.avg_fitness_history / normalisation, label="Avg Fitness")
+        plt.plot(x, self._max_fitness_history / normalisation, label="Max Fitness", c="g")
+        plt.plot(x, self._avg_fitness_history / normalisation, label="Avg Fitness")
         plt.title("Population Fitness vs Generation No.", fontsize=16)
         plt.xlabel("Generation no.", fontsize=16)
         plt.xlim([x[0], x[-1]])
