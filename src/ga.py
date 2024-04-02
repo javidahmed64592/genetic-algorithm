@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
 
+from src.helpers import print_system_msg
 from src.member import Member
 
 
@@ -27,6 +28,7 @@ class GeneticAlgorithm:
         phrase (str): The phrase to be guessed by the members
         mem_genes (List[str]): Possible genes to be used by the members' chromosomes
         """
+        print_system_msg("Creating population...")
         self._population_size = population_size
         self._mutation_rate = mutation_rate
         self._phrase = phrase
@@ -46,9 +48,9 @@ class GeneticAlgorithm:
         return f"{_pop_str}\n{_phrase_str}\n{_genes_str}"
 
     @property
-    def population(self) -> List[Member]:
+    def population(self) -> NDArray:
         if not np.any(self._population):
-            self._population = np.array(  # TODO: Make not array?
+            self._population = np.array(
                 [Member(len(self._phrase), self._mem_genes) for _ in range(self._population_size)]
             )
         return self._population
@@ -58,7 +60,7 @@ class GeneticAlgorithm:
         Prints the chromosomes of each member in the population.
         """
         _mems_str = "\n".join(self.population)
-        print(_mems_str)
+        print_system_msg(f"\n{_mems_str}")
 
     def print_avg_gens(self) -> None:
         """
@@ -66,7 +68,9 @@ class GeneticAlgorithm:
         all guesses were random.
         """
         num_gens = (len(self._mem_genes) ** len(self._phrase)) / self._population_size
-        print("If all guesses are random, it would take on average %s generations to guess the phrase." % num_gens)
+        print_system_msg(
+            f"If all guesses are random, it would take on average {num_gens} generations to guess the phrase."
+        )
 
     def calculate_population_fitness(self) -> NDArray:
         """
@@ -135,19 +139,20 @@ class GeneticAlgorithm:
         Run the evolution process.
         """
         self._generation = 1
+        print_system_msg("Running algorithm...")
 
         while True:
             # Evaluate the population
-            gen = "Generation %s \t||" % self._generation
+            gen = f"Generation {self._generation} \t||"
             self.evaluate()
 
             # Correct phrase found so break out of the loop
             if self.best_chromosome == self._phrase:
-                print("%s Phrase solved to be: %s" % (gen, self.best_chromosome))
+                print_system_msg(f"{gen} Phrase solved to be: {self.best_chromosome}")
                 break
 
             # Return the closest match and its associated fitness then evolve.
-            print("%s Best Chromosome: %s \t|| Max Fitness: %s" % (gen, self.best_chromosome, self.max_fitness))
+            print_system_msg(f"{gen} Best Chromosome: {self.best_chromosome} \t|| Max Fitness: {self.max_fitness}")
             self.evolve()
 
             # Increase generation
@@ -157,6 +162,7 @@ class GeneticAlgorithm:
         """
         Plot the max and average fitnesses for each generation.
         """
+        print_system_msg("Generating plot...")
         plt.figure(figsize=(14, 8))
 
         x = np.arange(self._generation)
