@@ -19,8 +19,8 @@ class GeneticAlgorithm:
 
     def __init__(self, population_size: int, mutation_rate: int, phrase: str, mem_genes: List[str]) -> None:
         """
-        Initialise a population of members of a specified size. The population uses
-        a phrase for the members to calculate their fitness.
+        Initialise a population of members of a specified size. The population uses a phrase for the members to
+        calculate their fitness.
 
         Parameters:
             population_size (int): Number of members for the population
@@ -34,7 +34,7 @@ class GeneticAlgorithm:
         self._phrase = phrase
         self._mem_genes = mem_genes
 
-        self._population: NDArray = None
+        self._population: NDArray = np.array([])
         self._max_fitness_history: List[int] = []
         self._avg_fitness_history: List[float] = []
 
@@ -61,98 +61,90 @@ class GeneticAlgorithm:
         Prints the chromosomes of each member in the population.
         """
         _mems_str = "\n".join(self.population)
-        print_system_msg(f"\n{_mems_str}")
+        print_system_msg(f"Members:\n{_mems_str}")
 
     def print_avg_gens(self) -> None:
         """
-        Prints the average number of generations required to guess the phrase if
-        all guesses were random.
+        Prints the average number of generations required to guess the phrase if all guesses were random.
         """
-        num_gens = (len(self._mem_genes) ** len(self._phrase)) / self._population_size
+        _num_gens = (len(self._mem_genes) ** len(self._phrase)) / self._population_size
         print_system_msg(
-            f"If all guesses are random, it would take on average {num_gens} generations to guess the phrase."
+            f"If all guesses are random, it would take on average {_num_gens} generations to guess the phrase."
         )
 
     def calculate_population_fitness(self) -> NDArray:
         """
         Calculates the fitnesses of each member in the population.
+
+        Returns:
+            pop_fitness (NDArray): Array of fitnesses of each member
         """
-        for member in self.population:
-            member.calculate_score(self._phrase)
-        return np.array([member.fitness for member in self.population])
+        for _member in self.population:
+            _member.calculate_score(self._phrase)
+        pop_fitness = np.array([member.fitness for member in self.population])
+        return pop_fitness
 
     def evaluate(self) -> None:
         """
-        Calculate the fitnesses of each member in the population and add the max
-        and average fitness to lists.
+        Calculate the fitnesses of each member in the population and add the max and average fitness to lists.
         """
         # Calculate population fitness
         _population_fitness = self.calculate_population_fitness()
 
         # Find the member with the highest fitness
-        best = self.population[np.argmax(_population_fitness)]
-        self._best_chromosome = best.chromosome
-        self._max_fitness = best.fitness
+        _best = self.population[np.argmax(_population_fitness)]
+        self._best_chromosome = _best.chromosome
+        self._max_fitness = _best.fitness
 
         # Add fitness data to lists
         self._max_fitness_history.append(self._max_fitness)
         self._avg_fitness_history.append(np.average(_population_fitness))
 
-    def select_parent(self, parent: Member) -> Member | None:
+    def select_parent(self) -> Member:
         """
-        Uses the Rejection Sampling technique to choose whether or not to use the
-        provided parent for crossover.
+        Uses the Rejection Sampling technique to choose whether or not to use a parent for crossover.
 
-        Parameters:
-            parent (Member): Potential parent to use for crossover
+        Returns:
+            parent (Member): Parent to use for crossover
         """
-        if np.random.uniform(0, 1) < parent.fitness / self._max_fitness:
-            return parent
-        return None
+        while True:
+            parent: Member = np.random.choice(self.population)
+            if np.random.uniform(0, 1) < parent.fitness / self._max_fitness:
+                return parent
 
     def evolve(self) -> None:
         """
-        Crossover the chromosomes of the members and overwrite their existing
-        chromosomes.
+        Crossover the chromosomes of the members and overwrite their existing chromosomes.
         """
         # Select parents for crossover
-        for member in self.population:
-            parentA = None
-            parentB = None
-
-            while parentA is None:
-                parentA = self.select_parent(np.random.choice(self.population))
-
-            while parentB is None:
-                potential_parent = np.random.choice(self.population)
-                if potential_parent != parentA:
-                    parentB = self.select_parent(potential_parent)
-
-            member.crossover(parentA, parentB, self._mutation_rate)
+        for _member in self.population:
+            _parentA = self.select_parent()
+            _parentB = self.select_parent()
+            _member.crossover(_parentA, _parentB, self._mutation_rate)
 
         # Overwrite the chromosome with the new chromosome
-        for member in self.population:
-            member.apply_new_chromosome()
+        for _member in self.population:
+            _member.apply_new_chromosome()
 
     def run(self) -> None:
         """
         Run the evolution process.
         """
-        self._generation = 1
         print_system_msg("Running algorithm...")
+        self._generation = 1
 
         while True:
             # Evaluate the population
-            gen = f"Generation {self._generation} \t||"
+            _gen = f"Generation {self._generation} \t||"
             self.evaluate()
 
             # Correct phrase found so break out of the loop
             if self._best_chromosome == self._phrase:
-                print_system_msg(f"{gen} Phrase solved to be: {self._best_chromosome}")
+                print_system_msg(f"{_gen} Phrase solved to be: {self._best_chromosome}")
                 break
 
             # Return the closest match and its associated fitness then evolve.
-            print_system_msg(f"{gen} Best Chromosome: {self._best_chromosome} \t|| Max Fitness: {self._max_fitness}")
+            print_system_msg(f"{_gen} Best Chromosome: {self._best_chromosome} \t|| Max Fitness: {self._max_fitness}")
             self.evolve()
 
             # Increase generation
