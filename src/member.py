@@ -23,9 +23,9 @@ class Member:
         Initialise a member for the population.
 
         Parameters:
-          length (int): Length of chromosome
-          gene_pool (List[str]): List of possible genes
-          mutation_rate (int): Probability for a gene to randomly mutate
+            length (int): Length of chromosome
+            gene_pool (List[str]): List of possible genes
+            mutation_rate (int): Probability for a gene to randomly mutate
         """
         self._length = length
         self._gene_pool = gene_pool
@@ -68,7 +68,7 @@ class Member:
         Calculate the member's score based on the provided phrase.
 
         Parameters:
-          phrase (str): Used to compare chromosome to phrase and calculate fitness
+            phrase (str): Used to compare chromosome to phrase and calculate fitness
         """
         self._score = sum([self.chromosome[i] == phrase[i] for i in range(self._length)])
 
@@ -77,8 +77,8 @@ class Member:
         Crossover the chromosomes of two parents to create a new chromosome.
 
         Parameters:
-          parent_a (Member): Used to construct new chromosome
-          parent_b (Member): Used to construct new chromosome
+            parent_a (Member): Used to construct new chromosome
+            parent_b (Member): Used to construct new chromosome
         """
         self._new_chromosome = ""
 
