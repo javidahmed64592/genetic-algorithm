@@ -1,5 +1,8 @@
+from typing import List
+
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.typing import NDArray
 
 from src.member import Member
 
@@ -13,69 +16,74 @@ class GeneticAlgorithm:
     specified mutation rate.
     """
 
-    def __init__(self, population_size, phrase, mem_genes, mutation_rate=10):
+    def __init__(self, population_size: int, mutation_rate: int, phrase: str, mem_genes: List[str]) -> None:
         """
         Initialise a population of members of a specified size. The population uses
         a phrase for the members to calculate their fitness.
 
-        Inputs:
-        population_size: int, number of members for the population
-        phrase: str, the phrase to be guessed by the members
-        mem_genes: list, possible genes to be used by the members' chromosomes
-        mutation_rate: int, probability for members' chromosomes to mutate
+        Parameters:
+        population_size (int): Number of members for the population
+        mutation_rate (int): Probability for members' chromosomes to mutate
+        phrase (str): The phrase to be guessed by the members
+        mem_genes (List[str]): Possible genes to be used by the members' chromosomes
         """
-        self.population = np.array([Member(len(phrase), mem_genes, mutation_rate) for _ in range(population_size)])
-        self.population_size = population_size
-        self.phrase = phrase
-        self.mem_genes = mem_genes
+        self._population_size = population_size
+        self._mutation_rate = mutation_rate
+        self._phrase = phrase
+        self._mem_genes = mem_genes
 
-        self.best_chromosome = ""
-        self.max_fitness = 0
-        self.population_fitness = np.empty(population_size)
-        self.generation = 0
+        self._population: List[Member] = []
+        self.max_fitness_history: List[int] = []
+        self.avg_fitness_history: List[float] = []
 
-        self.max_fitness_history = []
-        self.avg_fitness_history = []
-
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Return population size, phrase, and the possible genes.
         """
-        return "Population Size: %s\nPopulation Phrase: %s\nMember Genes: %s" % (
-            self.population_size,
-            self.phrase,
-            self.mem_genes,
-        )
+        _pop_str = f"Population Size: {self._population_size}"
+        _phrase_str = f"Population Phrase: {self._phrase}"
+        _genes_str = f"Member Genes: {self._mem_genes}"
+        return f"{_pop_str}\n{_phrase_str}\n{_genes_str}"
 
-    def print_members(self):
+    @property
+    def population(self) -> List[Member]:
+        if not np.any(self._population):
+            self._population = np.array(  # TODO: Make not array?
+                [Member(len(self._phrase), self._mem_genes) for _ in range(self._population_size)]
+            )
+        return self._population
+
+    def print_members(self) -> None:
         """
         Prints the chromosomes of each member in the population.
         """
-        for index in range(self.population_size):
-            print("Member %s Chromosome: %s" % (index + 1, self.population[index]))
+        _mems_str = "\n".join(self.population)
+        print(_mems_str)
 
-    def print_avg_gens(self):
+    def print_avg_gens(self) -> None:
         """
         Prints the average number of generations required to guess the phrase if
         all guesses were random.
         """
-        num_gens = (len(self.mem_genes) ** len(self.phrase)) / self.population_size
+        num_gens = (len(self._mem_genes) ** len(self._phrase)) / self._population_size
         print("If all guesses are random, it would take on average %s generations to guess the phrase." % num_gens)
 
-    def calculate_population_fitness(self):
+    def calculate_population_fitness(self) -> NDArray:
         """
         Calculates the fitnesses of each member in the population.
         """
-        return np.array([member.calculate_fitness(self.phrase) for member in self.population])
+        for member in self.population:
+            member.calculate_score(self._phrase)
+        return np.array([member.fitness for member in self.population])
 
-    def evaluate(self):
+    def evaluate(self) -> None:
         """
         Calculate the fitnesses of each member in the population and add the max
         and average fitness to lists.
         """
         # Calculate population fitness
-        self.population_fitness = self.calculate_population_fitness()
-        sorted = self.population[np.argsort(self.population_fitness)]
+        _population_fitness = self.calculate_population_fitness()
+        sorted = self.population[np.argsort(_population_fitness)]
 
         # Find the member with the highest fitness
         best = sorted[-1]
@@ -84,21 +92,21 @@ class GeneticAlgorithm:
 
         # Add fitness data to lists
         self.max_fitness_history.append(self.max_fitness)
-        self.avg_fitness_history.append(np.average(self.population_fitness))
+        self.avg_fitness_history.append(np.average(_population_fitness))
 
-    def select_parent(self, parent):
+    def select_parent(self, parent: Member) -> Member | None:
         """
         Uses the Rejection Sampling technique to choose whether or not to use the
         provided parent for crossover.
 
         Inputs:
-        parent: population_member, potential parent to use for crossover
+        parent (Member): Potential parent to use for crossover
         """
         if np.random.uniform(0, 1) < parent.fitness / self.max_fitness:
             return parent
         return None
 
-    def evolve(self):
+    def evolve(self) -> None:
         """
         Crossover the chromosomes of the members and overwrite their existing
         chromosomes.
@@ -109,35 +117,32 @@ class GeneticAlgorithm:
             parentB = None
 
             while parentA is None:
-                parentA = self.select_parent(self.population[np.random.randint(self.population_size)])
+                parentA = self.select_parent(np.random.choice(self.population))
 
             while parentB is None:
-                potential_parent = self.population[np.random.randint(self.population_size)]
+                potential_parent = np.random.choice(self.population)
                 if potential_parent != parentA:
                     parentB = self.select_parent(potential_parent)
 
-            member.crossover(parentA, parentB)
+            member.crossover(parentA, parentB, self._mutation_rate)
 
         # Overwrite the chromosome with the new chromosome
         for member in self.population:
             member.apply_new_chromosome()
 
-        # Increase generation
-        self.generation += 1
-
-    def run(self):
+    def run(self) -> None:
         """
         Run the evolution process.
         """
-        self.generation = 1
+        self._generation = 1
 
         while True:
             # Evaluate the population
-            gen = "Generation %s \t||" % self.generation
+            gen = "Generation %s \t||" % self._generation
             self.evaluate()
 
             # Correct phrase found so break out of the loop
-            if self.best_chromosome == self.phrase:
+            if self.best_chromosome == self._phrase:
                 print("%s Phrase solved to be: %s" % (gen, self.best_chromosome))
                 break
 
@@ -145,13 +150,16 @@ class GeneticAlgorithm:
             print("%s Best Chromosome: %s \t|| Max Fitness: %s" % (gen, self.best_chromosome, self.max_fitness))
             self.evolve()
 
-    def analyse(self):
+            # Increase generation
+            self._generation += 1
+
+    def analyse(self) -> None:
         """
         Plot the max and average fitnesses for each generation.
         """
         plt.figure(figsize=(14, 8))
 
-        x = np.arange(self.generation)
+        x = np.arange(self._generation)
         normalisation = np.max(self.max_fitness_history)
 
         plt.plot(x, self.max_fitness_history / normalisation, label="Max Fitness", c="g")
