@@ -43,9 +43,10 @@ class GeneticAlgorithm:
         Return population size, phrase, and the possible genes.
         """
         _pop_str = f"Population Size: {self._population_size}"
+        _mutation_str = f"Mutation Rate: {self._mutation_rate}"
         _phrase_str = f"Population Phrase: {self._phrase}"
         _genes_str = f"Member Genes: {self._mem_genes}"
-        return f"{_pop_str}\n{_phrase_str}\n{_genes_str}"
+        return f"{_pop_str}\n{_mutation_str}\n{_phrase_str}\n{_genes_str}"
 
     @property
     def population(self) -> NDArray:
