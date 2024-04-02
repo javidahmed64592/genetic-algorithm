@@ -18,18 +18,16 @@ class Member:
     the given task. The fitness function will also need to be changed.
     """
 
-    def __init__(self, length: int, gene_pool: List[str], mutation_rate: int) -> None:
+    def __init__(self, length: int, gene_pool: List[str]) -> None:
         """
         Initialise a member for the population.
 
         Parameters:
             length (int): Length of chromosome
             gene_pool (List[str]): List of possible genes
-            mutation_rate (int): Probability for a gene to randomly mutate
         """
         self._length = length
         self._gene_pool = gene_pool
-        self._mutation_rate = mutation_rate
         self._chromosome = ""
         self._new_chromosome = ""
 
@@ -72,13 +70,14 @@ class Member:
         """
         self._score = sum([self.chromosome[i] == phrase[i] for i in range(self._length)])
 
-    def crossover(self, parent_a: Member, parent_b: Member) -> None:
+    def crossover(self, parent_a: Member, parent_b: Member, mutation_rate: int) -> None:
         """
         Crossover the chromosomes of two parents to create a new chromosome.
 
         Parameters:
             parent_a (Member): Used to construct new chromosome
             parent_b (Member): Used to construct new chromosome
+            mutation_rate (int): Probability for mutations to occur
         """
         self._new_chromosome = ""
 
@@ -86,10 +85,10 @@ class Member:
             prob = np.random.randint(0, 100)
 
             # Half of the genes will come from parentA
-            if prob < (100 - self._mutation_rate) / 2:
+            if prob < (100 - mutation_rate) / 2:
                 new_char = parent_a.chromosome[i]
             # Half of the genes will come from parentB
-            elif prob < (100 - self._mutation_rate):
+            elif prob < (100 - mutation_rate):
                 new_char = parent_b.chromosome[i]
             # Chance for a random genes to be selected
             else:
