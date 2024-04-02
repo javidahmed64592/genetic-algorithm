@@ -21,8 +21,4 @@ if __name__ == "__main__":
     phrase = args.phrase
     genes = list(args.gene_pool)
 
-    mypop = GeneticAlgorithm(population_size, mutation_rate, phrase, genes)
-    print(mypop)
-    mypop.print_avg_gens()
-    mypop.run()
-    mypop.analyse()
+    mypop = GeneticAlgorithm.run_and_analyse(population_size, mutation_rate, phrase, genes)

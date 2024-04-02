@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -55,6 +57,17 @@ class GeneticAlgorithm:
                 [Member(len(self._phrase), self._mem_genes) for _ in range(self._population_size)]
             )
         return self._population
+
+    @classmethod
+    def run_and_analyse(
+        cls, population_size: int, mutation_rate: int, phrase: str, mem_genes: List[str]
+    ) -> GeneticAlgorithm:
+        _ga = cls(population_size, mutation_rate, phrase, mem_genes)
+        print(_ga)
+        _ga.print_avg_gens
+        _ga.run()
+        _ga.analyse
+        return _ga
 
     def print_members(self) -> None:
         """
