@@ -85,60 +85,6 @@ class GeneticAlgorithm:
             f"If all guesses are random, it would take on average {_num_gens} generations to guess the phrase."
         )
 
-    def calculate_population_fitness(self) -> NDArray:
-        """
-        Calculates the fitnesses of each member in the population.
-
-        Returns:
-            pop_fitness (NDArray): Array of fitnesses of each member
-        """
-        for _member in self.population:
-            _member.calculate_score(self._phrase)
-        pop_fitness = np.array([member.fitness for member in self.population])
-        return pop_fitness
-
-    def evaluate(self) -> None:
-        """
-        Calculate the fitnesses of each member in the population and add the max and average fitness to lists.
-        """
-        # Calculate population fitness
-        _population_fitness = self.calculate_population_fitness()
-
-        # Find the member with the highest fitness
-        _best = self.population[np.argmax(_population_fitness)]
-        self._best_chromosome = _best.chromosome
-        self._max_fitness = _best.fitness
-
-        # Add fitness data to lists
-        self._max_fitness_history.append(self._max_fitness)
-        self._avg_fitness_history.append(np.average(_population_fitness))
-
-    def select_parent(self) -> Member:
-        """
-        Uses the Rejection Sampling technique to choose whether or not to use a parent for crossover.
-
-        Returns:
-            parent (Member): Parent to use for crossover
-        """
-        while True:
-            parent: Member = np.random.choice(self.population)
-            if np.random.uniform(0, 1) < parent.fitness / self._max_fitness:
-                return parent
-
-    def evolve(self) -> None:
-        """
-        Crossover the chromosomes of the members and overwrite their existing chromosomes.
-        """
-        # Select parents for crossover
-        for _member in self.population:
-            _parentA = self.select_parent()
-            _parentB = self.select_parent()
-            _member.crossover(_parentA, _parentB, self._mutation_rate)
-
-        # Overwrite the chromosome with the new chromosome
-        for _member in self.population:
-            _member.apply_new_chromosome()
-
     def run(self) -> None:
         """
         Run the evolution process.
@@ -149,7 +95,7 @@ class GeneticAlgorithm:
         while True:
             # Evaluate the population
             _gen = f"Generation {self._generation} \t||"
-            self.evaluate()
+            self._evaluate()
 
             # Correct phrase found so break out of the loop
             if self._best_chromosome == self._phrase:
@@ -158,7 +104,7 @@ class GeneticAlgorithm:
 
             # Return the closest match and its associated fitness then evolve.
             print_system_msg(f"{_gen} Best Chromosome: {self._best_chromosome} \t|| Max Fitness: {self._max_fitness}")
-            self.evolve()
+            self._evolve()
 
             # Increase generation
             self._generation += 1
@@ -184,3 +130,57 @@ class GeneticAlgorithm:
         plt.yticks(fontsize=16)
         plt.legend(loc="best", fontsize=16)
         plt.show()
+
+    def _calculate_population_fitness(self) -> NDArray:
+        """
+        Calculates the fitnesses of each member in the population.
+
+        Returns:
+            pop_fitness (NDArray): Array of fitnesses of each member
+        """
+        for _member in self.population:
+            _member.calculate_score(self._phrase)
+        pop_fitness = np.array([member.fitness for member in self.population])
+        return pop_fitness
+
+    def _select_parent(self) -> Member:
+        """
+        Uses the Rejection Sampling technique to choose whether or not to use a parent for crossover.
+
+        Returns:
+            parent (Member): Parent to use for crossover
+        """
+        while True:
+            parent: Member = np.random.choice(self.population)
+            if np.random.uniform(0, 1) < parent.fitness / self._max_fitness:
+                return parent
+
+    def _evaluate(self) -> None:
+        """
+        Calculate the fitnesses of each member in the population and add the max and average fitness to lists.
+        """
+        # Calculate population fitness
+        _population_fitness = self._calculate_population_fitness()
+
+        # Find the member with the highest fitness
+        _best = self.population[np.argmax(_population_fitness)]
+        self._best_chromosome = _best.chromosome
+        self._max_fitness = _best.fitness
+
+        # Add fitness data to lists
+        self._max_fitness_history.append(self._max_fitness)
+        self._avg_fitness_history.append(np.average(_population_fitness))
+
+    def _evolve(self) -> None:
+        """
+        Crossover the chromosomes of the members and overwrite their existing chromosomes.
+        """
+        # Select parents for crossover
+        for _member in self.population:
+            _parentA = self._select_parent()
+            _parentB = self._select_parent()
+            _member.crossover(_parentA, _parentB, self._mutation_rate)
+
+        # Overwrite the chromosome with the new chromosome
+        for _member in self.population:
+            _member.apply_new_chromosome()
