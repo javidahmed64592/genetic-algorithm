@@ -1,6 +1,0 @@
-{
-    "population_size": 200,
-    "mutation_rate": 2,
-    "phrase": "I am a genetic algorithm!",
-    "gene_pool": "0123456789 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,!?"
-}
