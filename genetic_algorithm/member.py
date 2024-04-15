@@ -27,7 +27,7 @@ class Member:
         """
         Return the member's chromosome.
         """
-        return self._chromosome
+        return str(self._chromosome)
 
     @property
     def fitness(self) -> int:
