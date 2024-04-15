@@ -3,6 +3,12 @@
 # Genetic Algorithm
 A Python implementation of genetic algorithms.
 
+Install this package using `pipenv`:
+
+```
+pipenv install -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=genetic_algorithm
+```
+
 <!-- omit from toc -->
 ## Table of Contents
 - [Installing Dependencies](#installing-dependencies)
