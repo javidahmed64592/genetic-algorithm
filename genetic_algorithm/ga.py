@@ -4,8 +4,8 @@ from typing import List
 
 import numpy as np
 
-from src.member import Member
-from src.population import Population
+from genetic_algorithm.member import Member
+from genetic_algorithm.population import Population
 
 
 class GeneticAlgorithm:

@@ -5,7 +5,7 @@ from typing import Any, List
 import numpy as np
 from numpy.typing import NDArray
 
-from src.member import Member
+from genetic_algorithm.member import Member
 
 
 class Population:
