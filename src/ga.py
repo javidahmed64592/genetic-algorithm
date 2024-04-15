@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from typing import List
+
 import numpy as np
 
-from src.helpers import print_system_msg
 from src.member import Member
 from src.population import Population
 
@@ -24,7 +25,6 @@ class GeneticAlgorithm:
         Parameters:
             mutation_rate (int): Probability for members' chromosomes to mutate
         """
-        print_system_msg("Creating population...")
         self._mutation_rate = mutation_rate
         self._population: Population
         self._running = False
@@ -41,7 +41,6 @@ class GeneticAlgorithm:
         """
         Run the evolution process.
         """
-        print_system_msg("Running algorithm...")
         self._running = True
         self._generation = 1
 
@@ -50,6 +49,15 @@ class GeneticAlgorithm:
             self._analyse()
             self._evolve()
             self._generation += 1
+
+    def _add_population(self, population: List[Member]) -> None:
+        """
+        Assign a List of Members to population.
+
+        Parameters:
+            population (List[Member]): List of Member objects to add
+        """
+        self._population = Population(members=population)
 
     def _evaluate(self) -> None:
         """
@@ -63,7 +71,7 @@ class GeneticAlgorithm:
         """
         _gen_text = f"Generation {self._generation:>4}:"
         _max_fitness_text = f"Max Fitness: {self._population.best_fitness}"
-        print_system_msg(f"{_gen_text} {self._population.best_chromosome} \t|| {_max_fitness_text}")
+        print(f"{_gen_text} {self._population.best_chromosome} \t|| {_max_fitness_text}")
 
     def _evolve(self) -> None:
         """
