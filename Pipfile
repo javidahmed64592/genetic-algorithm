@@ -11,10 +11,11 @@ isort = "*"
 black = "*"
 flake8 = "*"
 mypy = "*"
+ipykernel = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.11"
 
 [scripts]
-main = "python src/main.py"
-lint = "lint.bat"
+test = "python -m pytest -vx"
