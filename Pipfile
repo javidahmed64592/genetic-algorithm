@@ -12,6 +12,7 @@ isort = "*"
 black = "*"
 flake8 = "*"
 mypy = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.11"
