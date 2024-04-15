@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 numpy = "~=1.25"
-matplotlib = "*"
 
 [dev-packages]
 isort = "*"
@@ -13,6 +12,7 @@ black = "*"
 flake8 = "*"
 mypy = "*"
 ipykernel = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.11"
