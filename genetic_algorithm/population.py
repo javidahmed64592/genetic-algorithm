@@ -24,16 +24,6 @@ class Population:
         self._population = np.array(members)
         self._population_fitness: NDArray
 
-    def calculate_member_scores(self, phrase: str) -> None:
-        """
-        Calculate each member's score using a phrase.
-
-        Parameters:
-            phrase (str): Phrase to be guessed by members
-        """
-        for _member in self._population:
-            _member.calculate_score(phrase)
-
     def evaluate(self) -> None:
         """
         Evaluate the population fitness and find best member.
