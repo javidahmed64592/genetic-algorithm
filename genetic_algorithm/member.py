@@ -34,7 +34,7 @@ class Member:
         """
         Return member fitness.
         """
-        return 1
+        return len(self._chromosome)
 
     def crossover(self, parent_a: Member, parent_b: Member, mutation_rate: int) -> None:
         """
