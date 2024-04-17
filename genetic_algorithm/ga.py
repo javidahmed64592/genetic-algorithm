@@ -28,6 +28,7 @@ class GeneticAlgorithm:
         self._mutation_rate = mutation_rate
         self._population: Population
         self._running = False
+        self._generation = 1
 
     def __str__(self) -> str:
         """
@@ -48,7 +49,6 @@ class GeneticAlgorithm:
             self._evaluate()
             self._analyse()
             self._evolve()
-            self._generation += 1
 
     def _add_population(self, population: List[Member]) -> None:
         """
@@ -86,6 +86,8 @@ class GeneticAlgorithm:
         # Overwrite the chromosome with the new chromosome
         for _member in self._population._population:
             _member.apply_new_chromosome()
+
+        self._generation += 1
 
     def _select_parent(self) -> Member:
         """
