@@ -30,6 +30,14 @@ class Member:
         return str(self._chromosome)
 
     @property
+    def chromosome(self) -> Any:
+        return self._chromosome
+
+    @chromosome.setter
+    def chromosome(self, new_chromosome: Any) -> None:
+        self._chromosome = new_chromosome
+
+    @property
     def fitness(self) -> int:
         """
         Return member fitness.
@@ -51,4 +59,4 @@ class Member:
         """
         Overwrite the member's chromosome with the new chromosome from crossover.
         """
-        self._chromosome = self._new_chromosome
+        self.chromosome = self._new_chromosome
