@@ -67,11 +67,12 @@ class GeneticAlgorithm:
 
     def _analyse(self) -> None:
         """
-        Analyse best member's chromosome.
+        Analyse population fitness.
         """
         _gen_text = f"Generation {self._generation:>4}:"
         _max_fitness_text = f"Max Fitness: {self._population.best_fitness}"
-        print(f"{_gen_text} {self._population.best_chromosome} \t|| {_max_fitness_text}")
+        _avg_fitness_text = f"Average Fitness: {np.average(self._population._population_fitness)}"
+        print(f"{_gen_text} \t{_max_fitness_text} \t{_avg_fitness_text}")
 
     def _evolve(self) -> None:
         """
