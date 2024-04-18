@@ -7,15 +7,13 @@ name = "pypi"
 numpy = "~=1.25"
 
 [dev-packages]
-isort = "*"
-black = "*"
-flake8 = "*"
-mypy = "*"
 ipykernel = "*"
 pytest = "*"
+ruff = "*"
 
 [requires]
 python_version = "3.11"
 
 [scripts]
 test = "python -m pytest -vx"
+ruff = "python -m ruff check ."
