@@ -13,16 +13,17 @@ class GeneticAlgorithm:
     specified mutation rate.
     """
 
-    def __init__(self, mutation_rate: int) -> None:
+    def __init__(self, members: list[Member], mutation_rate: int) -> None:
         """
         Initialise a population of members of a specified size. The population uses a phrase for the members to
         calculate their fitness.
 
         Parameters:
+            members (list[Member]): List of Members to create Population
             mutation_rate (int): Probability for members' chromosomes to mutate
         """
         self._mutation_rate = mutation_rate
-        self._population: Population
+        self._population = Population(members=members)
         self._running = False
         self._generation = 1
 
@@ -45,15 +46,6 @@ class GeneticAlgorithm:
             self._evaluate()
             self._analyse()
             self._evolve()
-
-    def _add_population(self, population: list[Member]) -> None:
-        """
-        Assign a List of Members to population.
-
-        Parameters:
-            population (List[Member]): List of Member objects to add
-        """
-        self._population = Population(members=population)
 
     def _evaluate(self) -> None:
         """
