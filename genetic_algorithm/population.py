@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -14,7 +14,7 @@ class Population:
     population fitnesses.
     """
 
-    def __init__(self, members: List[Member]) -> None:
+    def __init__(self, members: list[Member]) -> None:
         """
         Initialise Population with list of Members.
 
@@ -23,12 +23,6 @@ class Population:
         """
         self._population = np.array(members)
         self._population_fitness: NDArray
-
-    def evaluate(self) -> None:
-        """
-        Evaluate the population fitness and find best member.
-        """
-        self._population_fitness = np.array([member.fitness for member in self._population])
 
     @property
     def size(self) -> int:
@@ -52,3 +46,27 @@ class Population:
     @property
     def best_chromosome(self) -> Any:
         return self.best_member._chromosome
+
+    @property
+    def average_fitness(self) -> float:
+        _fitness: float = np.average(self._population_fitness)
+        return _fitness
+
+    @property
+    def new_parent(self) -> Member:
+        """
+        Uses the Rejection Sampling technique to choose whether or not to use a parent for crossover.
+
+        Returns:
+            parent (Member): Parent to use for crossover
+        """
+        while True:
+            parent: Member = self.random_member
+            if np.random.uniform(0, 1) < parent.fitness / self.best_fitness:
+                return parent
+
+    def evaluate(self) -> None:
+        """
+        Evaluate the population fitness and find best member.
+        """
+        self._population_fitness = np.array([member.fitness for member in self._population])

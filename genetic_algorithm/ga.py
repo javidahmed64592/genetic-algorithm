@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
-import numpy as np
-
 from genetic_algorithm.member import Member
 from genetic_algorithm.population import Population
 
@@ -17,16 +13,17 @@ class GeneticAlgorithm:
     specified mutation rate.
     """
 
-    def __init__(self, mutation_rate: int) -> None:
+    def __init__(self, members: list[Member], mutation_rate: int) -> None:
         """
         Initialise a population of members of a specified size. The population uses a phrase for the members to
         calculate their fitness.
 
         Parameters:
+            members (list[Member]): List of Members to create Population
             mutation_rate (int): Probability for members' chromosomes to mutate
         """
         self._mutation_rate = mutation_rate
-        self._population: Population
+        self._population = Population(members=members)
         self._running = False
         self._generation = 1
 
@@ -50,15 +47,6 @@ class GeneticAlgorithm:
             self._analyse()
             self._evolve()
 
-    def _add_population(self, population: List[Member]) -> None:
-        """
-        Assign a List of Members to population.
-
-        Parameters:
-            population (List[Member]): List of Member objects to add
-        """
-        self._population = Population(members=population)
-
     def _evaluate(self) -> None:
         """
         Evaluate the population.
@@ -71,7 +59,7 @@ class GeneticAlgorithm:
         """
         _gen_text = f"Generation {self._generation:>4}:"
         _max_fitness_text = f"Max Fitness: {self._population.best_fitness}"
-        _avg_fitness_text = f"Average Fitness: {np.average(self._population._population_fitness)}"
+        _avg_fitness_text = f"Average Fitness: {self._population.average_fitness}"
         print(f"{_gen_text} \t{_max_fitness_text} \t{_avg_fitness_text}")
 
     def _evolve(self) -> None:
@@ -80,24 +68,12 @@ class GeneticAlgorithm:
         """
         # Select parents for crossover
         for _member in self._population._population:
-            _parentA = self._select_parent()
-            _parentB = self._select_parent()
-            _member.crossover(_parentA, _parentB, self._mutation_rate)
+            _parent_a = self._population.new_parent
+            _parent_b = self._population.new_parent
+            _member.crossover(_parent_a, _parent_b, self._mutation_rate)
 
         # Overwrite the chromosome with the new chromosome
         for _member in self._population._population:
             _member.apply_new_chromosome()
 
         self._generation += 1
-
-    def _select_parent(self) -> Member:
-        """
-        Uses the Rejection Sampling technique to choose whether or not to use a parent for crossover.
-
-        Returns:
-            parent (Member): Parent to use for crossover
-        """
-        while True:
-            parent: Member = self._population.random_member
-            if np.random.uniform(0, 1) < parent.fitness / self._population.best_fitness:
-                return parent
