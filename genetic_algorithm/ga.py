@@ -68,8 +68,8 @@ class GeneticAlgorithm:
         """
         # Select parents for crossover
         for _member in self._population._population:
-            _parent_a = self._population.new_parent
-            _parent_b = self._population.new_parent
+            _parent_a = self._population.select_parent()
+            _parent_b = self._population.select_parent(_parent_a)
             _member.crossover(_parent_a, _parent_b, self._mutation_rate)
 
         # Overwrite the chromosome with the new chromosome
