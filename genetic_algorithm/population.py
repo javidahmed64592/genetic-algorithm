@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -14,7 +14,7 @@ class Population:
     population fitnesses.
     """
 
-    def __init__(self, members: List[Member]) -> None:
+    def __init__(self, members: list[Member]) -> None:
         """
         Initialise Population with list of Members.
 

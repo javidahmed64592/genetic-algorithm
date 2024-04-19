@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 
 from genetic_algorithm.member import Member
@@ -50,7 +48,7 @@ class GeneticAlgorithm:
             self._analyse()
             self._evolve()
 
-    def _add_population(self, population: List[Member]) -> None:
+    def _add_population(self, population: list[Member]) -> None:
         """
         Assign a List of Members to population.
 
@@ -80,9 +78,9 @@ class GeneticAlgorithm:
         """
         # Select parents for crossover
         for _member in self._population._population:
-            _parentA = self._select_parent()
-            _parentB = self._select_parent()
-            _member.crossover(_parentA, _parentB, self._mutation_rate)
+            _parent_a = self._select_parent()
+            _parent_b = self._select_parent()
+            _member.crossover(_parent_a, _parent_b, self._mutation_rate)
 
         # Overwrite the chromosome with the new chromosome
         for _member in self._population._population:
