@@ -19,3 +19,10 @@ class TestPopulation:
         self, mock_population: Population
     ) -> None:
         assert mock_population.random_member in mock_population._population
+
+    def test_given_parent_when_selecting_another_parent_then_check_different_parent_returned(
+        self, mock_population: Population, mock_member_med_fitness: Member
+    ) -> None:
+        new_parent = mock_population.select_parent(mock_member_med_fitness)
+        assert isinstance(new_parent, Member)
+        assert new_parent != mock_member_med_fitness

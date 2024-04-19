@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup  # type: ignore
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 setup(
     name="genetic_algorithm",

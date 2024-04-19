@@ -52,16 +52,20 @@ class Population:
         _fitness: float = np.average(self._population_fitness)
         return _fitness
 
-    @property
-    def new_parent(self) -> Member:
+    def select_parent(self, other_parent: Member | None = None) -> Member:
         """
         Uses the Rejection Sampling technique to choose whether or not to use a parent for crossover.
+
+        Parameters:
+            other_parent (Member | None): Other parent to ensure Member does not have two of the same parent
 
         Returns:
             parent (Member): Parent to use for crossover
         """
         while True:
             parent: Member = self.random_member
+            if parent == other_parent:
+                continue
             if np.random.uniform(0, 1) < parent.fitness / self.best_fitness:
                 return parent
 
