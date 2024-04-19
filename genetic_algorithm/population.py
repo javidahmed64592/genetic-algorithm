@@ -19,7 +19,7 @@ class Population:
         Initialise Population with list of Members.
 
         Parameters:
-            members (List[Member]): List of Member objects
+            members (list[Member]): List of Member objects
         """
         self._population = np.array(members)
         self._population_fitness: NDArray
