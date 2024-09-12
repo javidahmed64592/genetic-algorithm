@@ -7,13 +7,14 @@ name = "pypi"
 numpy = "~=1.25"
 
 [dev-packages]
-ipykernel = "*"
 pytest = "*"
+pytest-cov = "*"
 ruff = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.12"
 
 [scripts]
-test = "python -m pytest -vx"
+test = "python -m pytest -vx --cov=genetic_algorithm --cov-report term-missing"
 ruff = "python -m ruff check ."
