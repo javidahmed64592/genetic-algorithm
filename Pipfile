@@ -4,16 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-numpy = "~=1.25"
+numpy = "*"
 
 [dev-packages]
-ipykernel = "*"
 pytest = "*"
+pytest-cov = "*"
 ruff = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.12"
 
 [scripts]
-test = "python -m pytest -vx"
+test = "python -m pytest -vx --cov=genetic_algorithm --cov-report term-missing"
 ruff = "python -m ruff check ."
