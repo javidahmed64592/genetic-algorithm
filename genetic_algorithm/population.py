@@ -7,6 +7,8 @@ from numpy.typing import NDArray
 
 from genetic_algorithm.member import Member
 
+rng = np.random.default_rng()
+
 
 class Population:
     """
@@ -30,7 +32,7 @@ class Population:
 
     @property
     def random_member(self) -> Member:
-        _member: Member = np.random.choice(self._population)
+        _member: Member = rng.choice(self._population)
         return _member
 
     @property
@@ -44,7 +46,7 @@ class Population:
         return _fitness
 
     @property
-    def best_chromosome(self) -> Any:
+    def best_chromosome(self) -> Any:  # noqa: ANN401
         return self.best_member._chromosome
 
     @property
@@ -66,7 +68,7 @@ class Population:
             parent: Member = self.random_member
             if parent == other_parent:
                 continue
-            if np.random.uniform(0, 1) < parent.fitness / self.best_fitness:
+            if rng.uniform(0, 1) < parent.fitness / self.best_fitness:
                 return parent
 
     def evaluate(self) -> None:
