@@ -30,11 +30,11 @@ class Member:
         return str(self._chromosome)
 
     @property
-    def chromosome(self) -> Any:
+    def chromosome(self) -> Any:  # noqa: ANN401
         return self._chromosome
 
     @chromosome.setter
-    def chromosome(self, new_chromosome: Any) -> None:
+    def chromosome(self, new_chromosome: Any) -> None:  # noqa: ANN401
         self._chromosome = new_chromosome
 
     @property

@@ -7,14 +7,16 @@ A Python implementation of genetic algorithms.
 Install this package using `pipenv`:
 
 ```
-pipenv install -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=genetic_algorithm
+pip install -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=genetic_algorithm
 ```
 
 To update the package:
 
 ```
-pipenv update -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=genetic_algorithm
+pip update -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=genetic_algorithm
 ```
+
+_Note: It is recommended to install this into a virtual environment._
 
 <!-- omit from toc -->
 ## Table of Contents
@@ -24,10 +26,13 @@ pipenv update -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=ge
 - [Linting and Formatting](#linting-and-formatting)
 
 ## Installing Dependencies
-Install the required dependencies using [pipenv](https://github.com/pypa/pipenv):
+Install the required dependencies using `pip`:
 
-    pipenv install
-    pipenv install --dev
+    pip install -e .
+
+To install with `dev` and `test` dependencies:
+
+    pip install -e .[dev, test]
 
 ## Using the Genetic Algorithm
 For an example of how to use the genetic algorithm, see `phrase_solver.ipynb` where it is used to generate a specific sentence from random characters.
@@ -37,7 +42,7 @@ This library uses Pytest for the unit tests.
 These tests are located in the `tests` directory.
 To run the tests:
 
-    pipenv run test
+    python -m pytest tests -vx --cov --cov-report term-missing
 
 ## Linting and Formatting
 This library uses `ruff` for linting and formatting.
