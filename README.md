@@ -4,7 +4,7 @@
 # Genetic Algorithm
 A Python implementation of genetic algorithms.
 
-Install this package using `pipenv`:
+Install this package using `pip`:
 
 ```
 pip install -e git+https://github.com/javidahmed64592/genetic-algorithm#egg=genetic_algorithm
