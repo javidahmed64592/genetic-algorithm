@@ -32,7 +32,7 @@ Install the required dependencies using `pip`:
 
 To install with `dev` and `test` dependencies:
 
-    pip install -e .[dev, test]
+    pip install -e .[dev,test]
 
 ## Using the Genetic Algorithm
 For an example of how to use the genetic algorithm, see `phrase_solver.ipynb` where it is used to generate a specific sentence from random characters.
