@@ -2,35 +2,27 @@ from genetic_algorithm.member import Member
 
 
 class TestMember:
-    def test_member_initialization(self) -> None:
-        member = Member()
-        assert member.chromosome == ""
-        assert member.fitness == 0
+    def test_initialization(self, mock_member_low_fitness: Member) -> None:
+        assert mock_member_low_fitness.chromosome == "123"
+        assert mock_member_low_fitness._new_chromosome == ""
 
-    def test_member_str(self) -> None:
-        member = Member()
-        member.chromosome = "test_chromosome"
-        assert str(member) == "test_chromosome"
+    def test_fitness(self, mock_member_low_fitness: Member) -> None:
+        assert mock_member_low_fitness.fitness == len(mock_member_low_fitness.chromosome)
 
-    def test_member_fitness(self) -> None:
-        member = Member()
-        member.chromosome = "test_chromosome"
-        assert member.fitness == len(member.chromosome)
-
-    def test_member_crossover(self) -> None:
-        parent_a = Member()
-        parent_b = Member()
-        parent_a.chromosome = "AAAA"
-        parent_b.chromosome = "BBBB"
-
+    def test_crossover(self, mock_member_low_fitness: Member, mock_member_high_fitness: Member) -> None:
         child = Member()
-        child.crossover(parent_a, parent_b, mutation_rate=0)
+        child.crossover(mock_member_low_fitness, mock_member_high_fitness, mutation_rate=0)
 
         # Stub implementation for crossover logic
-        assert child._new_chromosome == "AAAA"
+        assert child._new_chromosome == mock_member_low_fitness.chromosome
 
-    def test_member_apply_new_chromosome(self) -> None:
-        member = Member()
-        member._new_chromosome = "new_chromosome"
-        member.apply_new_chromosome()
-        assert member.chromosome == "new_chromosome"
+    def test_apply_new_chromosome(self, mock_member_low_fitness: Member) -> None:
+        mock_member_low_fitness._new_chromosome = "new_chromosome"
+        mock_member_low_fitness.apply_new_chromosome()
+        assert mock_member_low_fitness.chromosome == "new_chromosome"
+
+    def test_end_to_end(self, mock_member_low_fitness: Member, mock_member_high_fitness: Member) -> None:
+        child = Member()
+        child.crossover(mock_member_low_fitness, mock_member_high_fitness, mutation_rate=0)
+        child.apply_new_chromosome()
+        assert child.chromosome == mock_member_low_fitness.chromosome
