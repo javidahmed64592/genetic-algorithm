@@ -20,8 +20,8 @@ class Member:
         """
         Initialise a Member for the population.
         """
-        self._chromosome: Any
-        self._new_chromosome: Any
+        self._chromosome: Any = ""
+        self._new_chromosome: Any = ""
 
     def __str__(self) -> str:
         """
@@ -53,7 +53,7 @@ class Member:
             parent_b (Member): Used to construct new chromosome
             mutation_rate (int): Probability for mutations to occur
         """
-        self._new_chromosome = self._chromosome
+        self._new_chromosome = parent_a._chromosome
 
     def apply_new_chromosome(self) -> None:
         """

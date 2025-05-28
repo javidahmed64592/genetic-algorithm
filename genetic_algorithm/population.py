@@ -23,21 +23,21 @@ class Population:
         Parameters:
             members (list[Member]): List of Member objects
         """
-        self._population = np.array(members)
+        self._members: NDArray = np.array(members)
         self._population_fitness: NDArray
 
     @property
     def size(self) -> int:
-        return len(self._population)
+        return len(self._members)
 
     @property
     def random_member(self) -> Member:
-        _member: Member = rng.choice(self._population)
+        _member: Member = rng.choice(self._members)
         return _member
 
     @property
     def best_member(self) -> Member:
-        _member: Member = self._population[np.argmax(self._population_fitness)]
+        _member: Member = self._members[np.argmax(self._population_fitness)]
         return _member
 
     @property
@@ -75,4 +75,4 @@ class Population:
         """
         Evaluate the population fitness and find best member.
         """
-        self._population_fitness = np.array([member.fitness for member in self._population])
+        self._population_fitness = np.array([member.fitness for member in self._members])
