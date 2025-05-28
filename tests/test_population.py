@@ -1,3 +1,5 @@
+import numpy as np
+
 from genetic_algorithm.member import Member
 from genetic_algorithm.population import Population
 
@@ -26,3 +28,11 @@ class TestPopulation:
         new_parent = mock_population.select_parent(mock_member_med_fitness)
         assert isinstance(new_parent, Member)
         assert new_parent != mock_member_med_fitness
+
+    def test_given_population_when_evaluating_then_check_population_fitness_calculated(
+        self, mock_population: Population
+    ) -> None:
+        expected_fitness = np.array([member.fitness for member in mock_population._members])
+        assert np.array_equal(mock_population._population_fitness, expected_fitness)
+        assert mock_population.best_fitness == max(mock_population._population_fitness)
+        assert mock_population.average_fitness == sum(mock_population._population_fitness) / mock_population.size
