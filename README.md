@@ -45,7 +45,7 @@ To install with `dev` dependencies:
     uv sync --extra dev
 
 ## Using the Genetic Algorithm
-For an example of how to use the genetic algorithm, see `phrase_solver.ipynb` where it is used to generate a specific sentence from random characters.
+For an example of how to use the genetic algorithm, see `examples/phrase_solver.ipynb` where it is used to generate a specific sentence from random characters.
 
 ## Testing, Linting, and Type Checking
 
