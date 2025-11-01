@@ -1,8 +1,6 @@
 [build-system]
-# Minimum requirements for the build system to execute.
-# PEP 508 specifications.
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "genetic-algorithm"
@@ -25,12 +23,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "ipykernel",
     "ruff",
     "mypy",
     "pytest",
     "pytest-cov",
-    "tomli",
+    "validate-pyproject",
+    "ipykernel",
 ]
 
 [project.urls]
@@ -112,8 +110,6 @@ select = [
     "YTT",
 ]
 ignore = [
-    "ANN101",
-    "ANN102",
     "D203",
     "D213",
     "PLR0913",
